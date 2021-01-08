@@ -3,7 +3,7 @@ name: Check for updates
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'
+    - cron: '*/30 * * * *'
 
 jobs:
   check:
@@ -19,7 +19,7 @@ jobs:
           labels: update
           lastTime: '2h'
       - name: Sleep
-        run: sleep 30
+        run: sleep 10
       - name: Close issues
         uses: Tsuk1ko/close-matching-issues@v2
         id: close-issue
@@ -28,23 +28,23 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
   update:
     needs: check
-    if: needs.check.outputs.need-update == 'true'
+    if: needs.check.outputs.need-update == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          repository: arkntools/arknights-toolbox
-          token: ${{ secrets.AUTHENTICATION }}
-      - name: Config git
         run: |
+          git clone https://${{ secrets.AUTHENTICATION }}@github.com/arkntools/arknights-toolbox.git . --single-branch --depth=1
           git config user.name "アーミヤ"
           git config user.email "amiya@rhodes.island"
+      - name: Checkout game data
+        run: |
+          git clone https://github.com/Kengxxiao/ArknightsGameData.git ../ArknightsGameData --single-branch --depth=1
+          git clone https://github.com/Dimbreath/ArknightsData.git ../ArknightsData --single-branch --depth=1
       - name: Update data
         id: update
         run: |
-          yarn install
-          IFTTT_EVENT_KEY=${{ secrets.IFTTT_EVENT_KEY }} yarn run update-data
+          yarn install --frozen-lockfile
+          IFTTT_EVENT_KEY=${{ secrets.IFTTT_EVENT_KEY }} yarn run update-data:local
       - name: Push
         run: |
           git add -A
