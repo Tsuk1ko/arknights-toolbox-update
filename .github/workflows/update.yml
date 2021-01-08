@@ -12,15 +12,18 @@ jobs:
       need-update: ${{ steps.close-issue.outputs.num > 0 }}
     steps:
       - name: RSS issues
-        uses: guilhem/rss-issues-action@0.2.0
+        id: rss-issue
+        uses: guilhem/rss-issues-action@0.3.4
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           feed: 'https://github.com/Kengxxiao/ArknightsGameData/commits.atom'
           labels: update
           lastTime: '2h'
       - name: Sleep
+        if: steps.rss-issue.outputs.issues
         run: sleep 10
       - name: Close issues
+        if: steps.rss-issue.outputs.issues
         uses: Tsuk1ko/close-matching-issues@v2
         id: close-issue
         with:
