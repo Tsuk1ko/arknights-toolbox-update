@@ -20,10 +20,10 @@ jobs:
           labels: update
           lastTime: '2h'
       - name: Sleep
-        if: steps.rss-issue.outputs.issues
-        run: sleep 10
+        run: |
+          echo ${{ steps.rss-issue.outputs.issues }}
+          sleep 10
       - name: Close issues
-        if: steps.rss-issue.outputs.issues
         uses: Tsuk1ko/close-matching-issues@v2
         id: close-issue
         with:
