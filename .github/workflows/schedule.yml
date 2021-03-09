@@ -39,15 +39,11 @@ jobs:
           git clone https://${{ secrets.AUTHENTICATION }}@github.com/arkntools/arknights-toolbox.git . --single-branch --depth=1
           git config user.name "アーミヤ"
           git config user.email "amiya@rhodes.island"
-      - name: Checkout game data
-        run: |
-          git clone https://github.com/Kengxxiao/ArknightsGameData.git ../ArknightsGameData --single-branch --depth=1
-          git clone https://github.com/Dimbreath/ArknightsData.git ../ArknightsData --single-branch --depth=1
       - name: Update data
         id: update
         run: |
           yarn install --frozen-lockfile
-          IFTTT_EVENT_KEY=${{ secrets.IFTTT_EVENT_KEY }} yarn run update-data:local
+          IFTTT_EVENT_KEY=${{ secrets.IFTTT_EVENT_KEY }} yarn run update-data
       - name: Push
         run: |
           git add -A
