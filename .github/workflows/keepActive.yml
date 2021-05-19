@@ -1,0 +1,22 @@
+name: Keep Active
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  keep-active:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: "keep-active"
+      - run: date > active
+      - uses: github-actions-x/commit@v2.8
+        with:
+          github-token: ${{ github.token }}
+          push-branch: "keep-active"
+          commit-message: "Keep active"
+          name: クロージャ
+          email: closure@rhodes.island
