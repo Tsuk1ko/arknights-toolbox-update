@@ -18,7 +18,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           feed: 'https://github.com/Kengxxiao/ArknightsGameData/commits.atom'
           labels: update
-          lastTime: '2h'
+          lastTime: '24h'
       - name: Sleep
         run: |
           echo ${{ steps.rss-issue.outputs.issues }}
